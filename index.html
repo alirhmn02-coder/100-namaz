@@ -1,0 +1,2123 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Berât Kandili - 100 Rekat Namaz Takibi</title>
+    <meta name="description"
+        content="100 rekâtlik bu namazı kılan kimse, o sene ölürse şehitlik mertebesine nâil olur. Bu namazın sıhhatlı takibi için bu sayfayı kullanabilir, sonunda evinize gönderilecek hediye için talep oluşturabilirsiniz!">
+    <link rel="icon" type="image/svg+xml" href="beraat-kandili-favicon.svg">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- intl-tel-input for phone country codes -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25.2.0/build/css/intlTelInput.css">
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Places API - Dinamik olarak yüklenecek -->
+
+    <style>
+        :root {
+            --primary: #fbbf24;
+            /* Altın */
+            --primary-dim: rgba(251, 191, 36, 0.2);
+            --bg-dark: #0f172a;
+            /* Gece Mavisi */
+            --bg-card: #1e293b;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding-bottom: 90px;
+            /* Footer payı */
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            padding: 25px 20px 10px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 1) 0%, rgba(15, 23, 42, 0) 100%);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(8px);
+        }
+
+        h1 {
+            font-family: 'Amiri', serif;
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 5px;
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Bilgi Kartı (Accordion) */
+        .info-card {
+            margin: 15px 15px 25px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .info-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .info-content {
+            padding: 0 15px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+            will-change: max-height;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+            border-top: 1px solid transparent;
+        }
+
+        .info-content.open {
+            padding: 15px;
+            max-height: 600px;
+            border-top-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .niyet-box {
+            background: var(--primary-dim);
+            color: var(--primary);
+            padding: 10px;
+            border-radius: 8px;
+            font-family: 'Amiri', serif;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        /* Grid Sistemi */
+        .container {
+            padding: 0 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .grid-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .grid-boxes {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .box {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            position: relative;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 600;
+        }
+
+        .box::before {
+            content: '\f067';
+            /* FontAwesome Plus */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 0.9rem;
+            opacity: 0.4;
+            transition: all 0.2s;
+        }
+
+        .box:hover::before {
+            opacity: 0.8;
+            color: var(--primary);
+        }
+
+        .box.next-up {
+            border-color: var(--primary);
+            animation: pulse 2s infinite;
+        }
+
+        .box.next-up::before {
+            color: var(--primary);
+            opacity: 0.8;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(251, 191, 36, 0);
+            }
+        }
+
+        .box:active {
+            transform: scale(0.9);
+        }
+
+        .box.completed {
+            background: var(--primary);
+            border: 2px solid var(--primary);
+            color: #000;
+            box-shadow: 0 0 10px var(--primary-dim);
+            animation: none;
+        }
+
+        .box.completed::before {
+            display: none;
+        }
+
+        .box.completed::after {
+            content: '\f00c';
+            /* FontAwesome Check */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 1.2rem;
+        }
+
+        /* Tamamlama Animasyonu */
+        .box.just-completed {
+            animation: celebrate 0.6s ease-out;
+        }
+
+        @keyframes celebrate {
+            0% {
+                transform: scale(1);
+            }
+
+            25% {
+                transform: scale(1.3);
+            }
+
+            50% {
+                transform: scale(0.9);
+            }
+
+            75% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Işık Halkası Efekti */
+        .ripple-effect {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.6) 0%, transparent 70%);
+            animation: ripple 0.8s ease-out forwards;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        @keyframes ripple {
+            0% {
+                width: 20px;
+                height: 20px;
+                opacity: 1;
+            }
+
+            100% {
+                width: 150px;
+                height: 150px;
+                opacity: 0;
+            }
+        }
+
+        /* Yıldız Parçacıkları */
+        .star-particle {
+            position: absolute;
+            color: var(--primary);
+            font-size: 12px;
+            animation: starBurst 0.8s ease-out forwards;
+            pointer-events: none;
+            z-index: 51;
+        }
+
+        @keyframes starBurst {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0.5);
+            }
+        }
+
+        /* Milestone Kutlaması */
+        .milestone-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            background: radial-gradient(circle at center, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.4) 60%, transparent 100%);
+            z-index: 190;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .milestone-toast {
+            /* position: fixed; kaldırıldı overlay içinde flex center olacak */
+            background: linear-gradient(135deg, var(--primary), #f59e0b);
+            color: #0f172a;
+            padding: 25px 30px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 1.4rem;
+            z-index: 200;
+            max-width: 85%;
+            text-align: center;
+            /* Güçlü kontrast gölgesi ve ince border */
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 4px rgba(15, 23, 42, 0.8);
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: scale(0);
+            animation: toastPop 2.5s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes toastPop {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            15% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+
+            25% {
+                transform: scale(1);
+            }
+
+            80% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        /* Sticky Footer */
+        .footer-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 15px 20px 25px;
+            /* iOS home bar için extra padding */
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+            /* Samsung Browser Fix: Hardware Acceleration */
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+            will-change: transform;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .progress-bg {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 20px;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            width: 100%;
+            max-width: 400px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border-radius: 16px;
+            padding: 25px;
+            padding-top: 45px;
+            border: 1px solid var(--primary);
+            text-align: center;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .task-list {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .task-item {
+            display: block;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+
+        .task-item.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.15);
+        }
+
+        .task-item.checked {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .task-item.checked.active {
+            border-color: var(--success);
+        }
+
+        .task-header {
+            display: flex;
+            align-items: center;
+            padding: 14px;
+            cursor: pointer;
+        }
+
+        .custom-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--text-muted);
+            border-radius: 6px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .task-item.checked .custom-checkbox {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .task-text {
+            font-size: 0.9rem;
+            flex-grow: 1;
+        }
+
+        .task-count {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 0.85rem;
+            background: rgba(251, 191, 36, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .task-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+            padding: 0 14px;
+        }
+
+        .task-item.active .task-details {
+            max-height: 800px;
+            padding: 0 14px 14px 14px;
+        }
+
+        .task-arabic {
+            font-family: 'Amiri', serif;
+            font-size: 1.2rem;
+            color: var(--primary);
+            text-align: right;
+            direction: rtl;
+            line-height: 2;
+            margin-bottom: 12px;
+            padding: 15px;
+            background: rgba(251, 191, 36, 0.08);
+            border-radius: 10px;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .task-turkish {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .task-check-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 12px;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .task-check-btn:hover {
+            opacity: 0.9;
+        }
+
+        .task-check-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Form Elements */
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 5px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            /* Zoom engellemek için */
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-input.valid {
+            border-color: var(--success);
+        }
+
+        .form-input.invalid {
+            border-color: #ef4444;
+        }
+
+        .form-input {
+            margin-bottom: 10px;
+        }
+
+        .email-input-wrapper,
+        .address-input-wrapper {
+            margin-bottom: 0;
+        }
+
+        .validation-message {
+            font-size: 0.8rem;
+            margin: 0;
+        }
+
+        .validation-message:not(:empty) {
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+
+        .validation-message.error {
+            color: #ef4444;
+        }
+
+        .validation-message.success {
+            color: var(--success);
+        }
+
+        /* Google Places Autocomplete Styles */
+        .pac-container {
+            background-color: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-top: 5px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .pac-item {
+            padding: 10px;
+            color: var(--text-light);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+        }
+
+        .pac-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .pac-item-query {
+            color: var(--primary);
+        }
+
+        .pac-matched {
+            font-weight: bold;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: #0f172a;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn:disabled {
+            background: var(--text-muted);
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* intl-tel-input Dark Theme Customization */
+        .iti {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .iti__tel-input {
+            width: 100%;
+            padding: 12px;
+            padding-left: 52px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .iti__tel-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .iti__country-container {
+            padding: 0;
+        }
+
+        .iti__selected-country {
+            background: transparent;
+            border-radius: 8px 0 0 8px;
+            padding: 0 8px;
+        }
+
+        .iti__selected-country:hover,
+        .iti__selected-country:focus {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .iti__arrow {
+            border-top-color: var(--text-muted);
+        }
+
+        .iti__arrow--up {
+            border-bottom-color: var(--text-muted);
+        }
+
+        .iti__dropdown {
+            background: var(--bg-card) !important;
+            background-color: var(--bg-card) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .iti__country-list {
+            background: var(--bg-card) !important;
+            background-color: var(--bg-card) !important;
+        }
+
+        .iti__search-input {
+            background: rgba(0, 0, 0, 0.5) !important;
+            background-color: rgba(0, 0, 0, 0.5) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: white !important;
+            padding: 8px 10px;
+        }
+
+        .iti__search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .iti__search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .iti__country {
+            padding: 8px 10px;
+            color: var(--text-light) !important;
+            background: transparent;
+        }
+
+        .iti__country:hover,
+        .iti__country--highlight {
+            background: rgba(251, 191, 36, 0.15) !important;
+        }
+
+        .iti__dial-code {
+            color: var(--text-muted) !important;
+        }
+
+        .iti__divider {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .iti__country-name {
+            color: var(--text-light) !important;
+        }
+
+        /* Nurani Glow Efekti */
+        /* Nurani Glow Efekti (Statik - Performans Dostu) */
+        .nurani-glow {
+            text-shadow: 0 0 20px rgba(251, 191, 36, 0.5), 0 0 40px rgba(251, 191, 36, 0.2);
+            color: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div
+            style="display: flex; justify-content: space-between; align-items: center; max-width: 600px; margin: 0 auto;">
+            <div style="width: 40px;"></div>
+            <div style="text-align: center; flex: 1;">
+                <h1 class="nurani-glow">Berât Gecesi</h1>
+                <div class="subtitle">100 Rekat Hayır Namazı Takibi ve Hediye Formu</div>
+            </div>
+            <button onclick="resetProgress()"
+                style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 10px; font-size: 1.1rem;"
+                title="İlerlemeyi Sıfırla">
+                <i class="fas fa-rotate-right"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="info-card" style="margin-bottom: 5px;">
+        <div class="info-header" onclick="toggleInfo()">
+            <span><i class="fas fa-book-open" style="color:var(--primary); margin-right:8px;"></i> Niyet ve Tarif</span>
+            <i class="fas fa-chevron-down" id="infoIcon"></i>
+        </div>
+        <div class="info-content" id="infoContent">
+            <div class="niyet-box">
+                “Yâ Rabbi! Niyet ettim senin rızâ-yı şerîfin için namaza. Beni afv-ı İlâhî’ne, feyz-i İlâhî’ne mazhar
+                eyle. Kasvet-i kalpten, dünya ve âhiret sıkıntılarından halâs eyleyip saîdler defterine kaydeyle.”
+            </div>
+            <p><strong>Kılınışı:</strong> Her rekâtte, Fâtiha-i şerîfeden sonra 10 İhlâs-ı şerîf okunur, iki rekâtte bir
+                selâm verilerek 100 rekâte tamamlanır.</p>
+        </div>
+    </div>
+
+    <div class="info-card" style="margin-top: 0;">
+        <div class="info-header" onclick="toggleFazilet()">
+            <span><i class="fas fa-star" style="color:var(--primary); margin-right:8px;"></i> Berât Gecesinin
+                Faziletleri</span>
+            <i class="fas fa-chevron-down" id="faziletIcon"></i>
+        </div>
+        <div class="info-content" id="faziletContent">
+            <p>Sevgili Peygamber Efendimiz sallallâhü aleyhi ve sellem şöyle buyurdular:</p>
+            <ul style="padding-left: 20px; margin: 10px 0;">
+                <li>Şâbân(-ı şerîf) ayının on beşinci (yani Berât) gecesi olduğu zaman, gecesini ibadetle geçirin,
+                    gündüzünde de oruç tutun.</li>
+                <li>Her kim bu (Berât) gece(sinde) yüz rekât namaz kılarsa, Allâhü Teâlâ, ona, yüz melek gönderir.
+                    Bunlardan otuzu, ona Cennet’i müjdeler, otuzu Cehennem azâbından emniyette olduğunu söyler, otuzu da
+                    dünya âfetlerini ondan geri çevirir. On melek de o kimseyi, şeytanın tuzaklarından muhafaza eder.
+                </li>
+                <li>Kim şu beş geceyi ihyâ ederse o kimseye Cennet vacip olur: Terviye gecesi (Arefe’den önceki gece),
+                    Arefe gecesi, Kurban Bayramı gecesi, Ramazan Bayramı gecesi, Şâban(-ı şerîf) ayının on beşinci
+                    gecesi.</li>
+            </ul>
+            <p><strong>Berât Gecesi’nin husûsiyetlerinden bazıları:</strong></p>
+            <ul style="padding-left: 20px; margin: 10px 0;">
+                <li>Hikmetli her iş -kulların rızıkları, ecelleri, vesâir işleri- bu gecede ayırt edilir; yazılır.</li>
+                <li>Bu gecede ibadet etmek çok faziletlidir.</li>
+                <li>Bu gecede rahmet iner. Hadîs-i şerifte, “Şâban ayının yarısı olduğu gecede, Allâhü Teâlâ
+                    (rahmetiyle) dünya semâsına tecellî eder…” buyurulmuştur.</li>
+                <li>Müminler mağfiret olunur, günahları bağışlanır.</li>
+                <li>Resûlullah (s.a.v.) Efendimize tam şefaat salâhiyeti bu gecede verilmiştir. Sevgili Peygamberimiz
+                    (s.a.v.), Şâbân-ı şerîf ayının on üçüncü gecesinde Allâhü Teâlâ’dan, ümmeti için şefaat izni istedi.
+                    Allâhü Teâlâ, ümmetinin üçte birine şefaat izni verdi. On dördüncü gecesi, kalan ümmeti için şefaat
+                    izni istedi. Allâhü Teâlâ, ümmetinin üçte ikisine şefaat izni verdi. On beşinci gecesi, kalan ümmeti
+                    için şefaat izni istedi. Allâhü Teâlâ -devenin, sahibinden kaçtığı gibi, Allâhü Teâlâ’dan kaçanlar
+                    hâriç- ümmetinin tamamına şefaat etmesine izin verdi.</li>
+                <li>Bu gecede Zemzem Suyu’nun âşikâr bir şekilde artması, Allâhü Teâlâ’nın bir sünneti (âdet-i
+                    İlâhiyye’si)dir. Bunda İlâhî ilimlerin, hakikat ehlinin kalbinde artacağına işaret vardır."</li>
+            </ul>
+        </div>
+    </div>
+
+    <div onclick="openEarlyForm()"
+        style="text-align: center; color: var(--primary); cursor: pointer; margin: 5px 0 20px 0; font-weight: 600; font-size: 0.9rem; text-decoration: underline;">
+        &lt; Namazdan önce hediye formunu doldurmak için tıklayın! &gt;
+    </div>
+
+    <div class="container">
+        <div class="grid-header">
+            <span>İlerleme Durumu</span>
+            <span id="completedCount">0 / 50 Selam</span>
+        </div>
+        <div
+            style="text-align: center; margin-bottom: 15px; padding: 10px; background: rgba(251, 191, 36, 0.1); border-radius: 8px; font-size: 0.85rem; color: var(--text-muted);">
+            <i class="fas fa-hand-pointer" style="color: var(--primary); margin-right: 5px;"></i>
+            Her 2 rekat kıldıktan sonra bir kutucuğa dokunun
+        </div>
+        <div class="grid-boxes" id="gridContainer">
+            <!-- Kutular JS ile gelecek -->
+        </div>
+    </div>
+
+    <div class="footer-bar">
+        <div class="progress-info">
+            <span style="color:var(--primary)">Toplam Rekat</span>
+            <span id="rakatCount">0 / 100</span>
+        </div>
+        <div class="progress-bg">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal" id="mainModal">
+        <div class="modal-content">
+            <!-- Kapatma Butonu -->
+            <button onclick="closeModal()"
+                style="position:absolute; top:5px; right:5px; background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:0.85rem; padding:3px 6px; opacity:0.5; transition:opacity 0.2s;"
+                onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <!-- AŞAMA 1: TESBİHAT -->
+            <div id="stepTesbihat">
+                <div style="font-size:3rem; margin-bottom:15px;">🤲🏻</div>
+                <h2 style="font-family:'Amiri', serif; margin-bottom:10px;">Allah Kabul Etsin</h2>
+                <p style="font-size:0.9rem; color:var(--text-muted);">Mâşâallah, namazı tamamladınız! Şimdi
+                    tesbihatlarla devam edebiliriz.</p>
+
+                <div class="task-list" id="taskList">
+                    <!-- JS ile dolacak -->
+                </div>
+
+                <button class="btn" id="btnNext" disabled onclick="showForm()">
+                    Hediyeni Al <i class="fas fa-arrow-right" style="margin-left:5px;"></i>
+                </button>
+            </div>
+
+            <!-- AŞAMA 2: FORM -->
+            <div id="stepForm" class="hidden">
+                <h2 style="color:var(--primary); font-family:'Amiri', serif;">Hediye Zamanı!</h2>
+                <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:20px;">
+                    Ramazan-ı Şerif öncesinde hediyenizi evinize göndermek istiyoruz.
+                </p>
+
+                <form id="giftForm" onsubmit="submitForm(event)" autocomplete="on">
+                    <!-- İsim alanı -->
+                    <div class="name-input-wrapper">
+                        <input type="text" name="name" id="inputName" class="form-input" placeholder="Ad Soyad" required
+                            autocomplete="name">
+                        <div class="validation-message" id="nameError"></div>
+                    </div>
+
+                    <!-- Email alanı -->
+                    <div class="email-input-wrapper">
+                        <input type="email" name="email" id="inputEmail" class="form-input" placeholder="E-posta"
+                            required autocomplete="email">
+                        <div class="validation-message" id="emailError"></div>
+                    </div>
+
+                    <!-- Telefon alanı (intl-tel-input) -->
+                    <div class="phone-input-wrapper">
+                        <input type="tel" name="phone" id="inputPhone" placeholder="Telefon Numarası" required
+                            autocomplete="tel" inputmode="tel">
+                        <input type="hidden" name="phoneIntl" id="phoneIntl">
+                    </div>
+                    <!-- Adres alanı (Google Places Autocomplete) -->
+                    <div class="address-input-wrapper">
+                        <input type="text" name="address" id="inputAddress" class="form-input"
+                            placeholder="Adresinizi yazın..." required autocomplete="street-address">
+                        <div class="validation-message" id="addressError"></div>
+                        <input type="hidden" name="addressFull" id="addressFull">
+                        <input type="hidden" name="addressCity" id="addressCity">
+                        <input type="hidden" name="addressCountry" id="addressCountry">
+                    </div>
+
+                    <button type="submit" class="btn" id="submitBtn" disabled>
+                        Kaydı Tamamla <i class="fas fa-check"></i>
+                    </button>
+                    <div class="validation-message" id="formError" style="text-align:center; margin-top:10px;"></div>
+                    <p
+                        style="font-size:0.7rem; color:var(--text-muted); text-align:center; margin-top:15px; opacity:0.6;">
+                        Hediyelerimiz sınırlı sayıdadır.</p>
+                </form>
+            </div>
+
+            <!-- AŞAMA 3: SONUÇ -->
+            <div id="stepSuccess" class="hidden">
+                <div style="font-size:4rem; color:var(--success); margin-bottom:15px;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>Kaydınız Alındı!</h3>
+                <p style="margin:10px 0; color:var(--text-muted);">Bilgileriniz bize ulaştı. Mübarek Berât Kandilinizi
+                    tebrik ederiz.</p>
+                <button class="btn" onclick="closeModal()"
+                    style="background:transparent; border:1px solid var(--primary); color:var(--primary); margin-top:20px;">
+                    Kapat
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- KONFIGURASYON ---
+        const totalBoxes = 50;
+
+        // --- REFERRAL TRAKİNG ---
+        const REFERRAL_STORAGE_KEY = 'berat_referral';
+
+        function getReferralCode() {
+            // URL'den ?r= parametresini oku
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlReferral = urlParams.get('r');
+
+            // URL'de varsa localStorage'a kaydet
+            if (urlReferral) {
+                localStorage.setItem(REFERRAL_STORAGE_KEY, urlReferral);
+                return urlReferral;
+            }
+
+            // URL'de yoksa localStorage'dan al
+            return localStorage.getItem(REFERRAL_STORAGE_KEY) || 'direct';
+        }
+
+        function getDeviceType() {
+            return /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? 'mobile' : 'desktop';
+        }
+        const tesbihatData = [
+            {
+                text: "İstiğfâr-ı şerîf",
+                count: 14,
+                arabic: "أَسْتَغْفِرُ اللهَ الْعَظِيمَ وَأَتُوبُ إِلَيْهِ",
+                turkish: "Estağfirullâhel azîm ve etûbü ileyh"
+            },
+            {
+                text: "Salevât-ı şerîfe",
+                count: 14,
+                arabic: "اَللّٰهُمَّ صَلِّ عَلٰى سَيِّدِنَا مُحَمَّدٍ وَعَلٰى اٰلِ سَيِّدِنَا مُحَمَّدٍ",
+                turkish: "Allâhümme salli alâ seyyidinâ Muhammedin ve alâ âli seyyidinâ Muhammed"
+            },
+            {
+                text: "Fâtiha-i şerîfe",
+                count: 14,
+                arabic: "بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحٖيمِ ❁ اَلْحَمْدُ لِلّٰهِ رَبِّ الْعَالَمٖينَ ❁ اَلرَّحْمٰنِ الرَّحٖيمِ ❁ مَالِكِ يَوْمِ الدّٖينِ ❁ اِيَّاكَ نَعْبُدُ وَاِيَّاكَ نَسْتَعٖينُ ❁ اِهْدِنَا الصِّرَاطَ الْمُسْتَقٖيمَ ❁ صِرَاطَ الَّذٖينَ اَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّٓالّٖينَ",
+                turkish: "Bismillâhirrahmânirrahîm. Elhamdü lillâhi rabbil âlemîn. Errahmânirrahîm. Mâliki yevmiddîn. İyyâke na'büdü ve iyyâke nesteîn. İhdinassırâtal müstakîm. Sırâtallezîne en'amte aleyhim ğayril mağdûbi aleyhim veleddâllîn."
+            },
+            {
+                text: "Âyetü'l-Kürsî",
+                count: 14,
+                arabic: "بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحٖيمِ ❁ اَللّٰهُ لَٓا اِلٰهَ اِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمٰوَاتِ وَمَا فِي الْاَرْضِ مَنْ ذَا الَّذٖي يَشْفَعُ عِنْدَهُٓ اِلَّا بِاِذْنِهٖ يَعْلَمُ مَا بَيْنَ اَيْدٖيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحٖيطُونَ بِشَيْءٍ مِنْ عِلْمِهٖٓ اِلَّا بِمَا شَٓاءَ وَسِعَ كُرْسِيُّهُ السَّمٰوَاتِ وَالْاَرْضَ وَلَا يَؤُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظٖيمُ",
+                turkish: "Bismillâhirrahmânirrahîm. Allâhü lâ ilâhe illâ hüvel hayyül kayyûm. Lâ te'huzühû sinetün velâ nevm. Lehû mâ fissemâvâti ve mâ fil ard. Men zellezî yeşfeu indehû illâ biiznih. Ya'lemü mâ beyne eydîhim ve mâ halfehüm. Ve lâ yühîtûne bişey'in min ilmihî illâ bimâ şâe. Vesia kürsiyyühüs semâvâti vel ard. Ve lâ yeûdühû hıfzuhümâ ve hüvel aliyyül azîm."
+            },
+            {
+                text: "Tevbe Sûresi son 2 ayet",
+                count: 14,
+                arabic: "بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحٖيمِ ❁ لَقَدْ جَٓاءَكُمْ رَسُولٌ مِنْ اَنْفُسِكُمْ عَزٖيزٌ عَلَيْهِ مَا عَنِتُّمْ حَرٖيصٌ عَلَيْكُمْ بِالْمُؤْمِنٖينَ رَؤُوفٌ رَحٖيمٌ ❁ فَاِنْ تَوَلَّوْا فَقُلْ حَسْبِيَ اللّٰهُ لَٓا اِلٰهَ اِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظٖيمِ",
+                turkish: "Bismillâhirrahmânirrahîm. Lekad câeküm resûlün min enfüsiküm azîzün aleyhi mâ anittüm harîsun aleyküm bil mü'minîne raûfün rahîm. Fein tevellev fekul hasbiyallâhü lâ ilâhe illâ hû, aleyhi tevekkeltü ve hüve rabbül arşil azîm."
+            },
+            {
+                text: "14 'Yasin' dedikten sonra Yâsîn Sûresi",
+                count: 1,
+                arabic: null,
+                turkish: null
+            },
+            {
+                text: "İhlâs-ı şerîf",
+                count: 14,
+                arabic: "بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحٖيمِ ❁ قُلْ هُوَ اللّٰهُ اَحَدٌ ❁ اَللّٰهُ الصَّمَدُ ❁ لَمْ يَلِدْ وَلَمْ يُولَدْ ❁ وَلَمْ يَكُنْ لَهُ كُفُوًا اَحَدٌ",
+                turkish: "Bismillâhirrahmânirrahîm. Kul hüvallâhü ehad. Allâhüs samed. Lem yelid ve lem yûled. Ve lem yekün lehû küfüven ehad."
+            },
+            {
+                text: "Felak Sûresi",
+                count: 14,
+                arabic: "بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحٖيمِ ❁ قُلْ اَعُوذُ بِرَبِّ الْفَلَقِ ❁ مِنْ شَرِّ مَا خَلَقَ ❁ وَمِنْ شَرِّ غَاسِقٍ اِذَا وَقَبَ ❁ وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ❁ وَمِنْ شَرِّ حَاسِدٍ اِذَا حَسَدَ",
+                turkish: "Bismillâhirrahmânirrahîm. Kul eûzü birabbil felak. Min şerri mâ halak. Ve min şerri ğâsikın izâ vekab. Ve min şerrin neffâsâti fil ukad. Ve min şerri hâsidin izâ hased."
+            },
+            {
+                text: "Nâs Sûresi",
+                count: 14,
+                arabic: "بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحٖيمِ ❁ قُلْ اَعُوذُ بِرَبِّ النَّاسِ ❁ مَلِكِ النَّاسِ ❁ اِلٰهِ النَّاسِ ❁ مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ❁ اَلَّذٖي يُوَسْوِسُ فٖي صُدُورِ النَّاسِ ❁ مِنَ الْجِنَّةِ وَالنَّاسِ",
+                turkish: "Bismillâhirrahmânirrahîm. Kul eûzü birabbin nâs. Melikin nâs. İlâhin nâs. Min şerril vesvâsil hannâs. Ellezî yüvesvisü fî sudûrin nâs. Minel cinneti ven nâs."
+            },
+            {
+                text: "Sübhânellâhi ve'l-hamdü...",
+                count: 14,
+                arabic: "سُبْحَانَ اللّٰهِ وَالْحَمْدُ لِلّٰهِ وَلَٓا اِلٰهَ اِلَّا اللّٰهُ وَاللّٰهُ اَكْبَرُ وَلَا حَوْلَ وَلَا قُوَّةَ اِلَّا بِاللّٰهِ الْعَلِيِّ الْعَظٖيمِ",
+                turkish: "Sübhânallâhi vel hamdü lillâhi ve lâ ilâhe illallâhü vallâhü ekber. Ve lâ havle ve lâ kuvvete illâ billâhil aliyyil azîm."
+            },
+            {
+                text: "Salât-ı Münciye",
+                count: 14,
+                arabic: "اَللّٰهُمَّ صَلِّ عَلٰى سَيِّدِنَا مُحَمَّدٍ وَعَلٰى اٰلِ سَيِّدِنَا مُحَمَّدٍ صَلَاةً تُنْجٖينَا بِهَا مِنْ جَمٖيعِ الْاَهْوَالِ وَالْاٰفَاتِ وَتَقْضٖي لَنَا بِهَا جَمٖيعَ الْحَاجَاتِ وَتُطَهِّرُنَا بِهَا مِنْ جَمٖيعِ السَّيِّئَاتِ وَتَرْفَعُنَا بِهَا عِنْدَكَ اَعْلَى الدَّرَجَاتِ وَتُبَلِّغُنَا بِهَا اَقْصَى الْغَايَاتِ مِنْ جَمٖيعِ الْخَيْرَاتِ فِي الْحَيَاةِ وَبَعْدَ الْمَمَاتِ",
+                turkish: "Allâhümme salli alâ seyyidinâ Muhammedin ve alâ âli seyyidinâ Muhammed. Salâten tüncînâ bihâ min cemîil ehvâli vel âfât. Ve takdî lenâ bihâ cemîal hâcât. Ve tütahhirunâ bihâ min cemîis seyyiât. Ve terfeunâ bihâ indeke a'led derecât. Ve tübelliğunâ bihâ aksâl ğâyât. Min cemîil hayrâti fil hayâti ve ba'del memât."
+            }
+        ];
+
+        // --- STATE ---
+        let completed = JSON.parse(localStorage.getItem('berat_progress')) || [];
+        let completedTasks = JSON.parse(localStorage.getItem('berat_tasks')) || [];
+        let currentStep = localStorage.getItem('berat_step') || 'grid'; // 'grid', 'tesbihat', 'form', 'success'
+        let isEarlySubmission = localStorage.getItem('berat_is_early') === 'true';
+
+        // --- DOM ELEMENTLERI ---
+        const gridEl = document.getElementById('gridContainer');
+        const progressFill = document.getElementById('progressBar');
+        const rakatCountEl = document.getElementById('rakatCount');
+        const completedCountEl = document.getElementById('completedCount');
+        const modal = document.getElementById('mainModal');
+
+        // --- INIT ---
+        function init() {
+            renderGrid();
+            updateStats();
+            renderTasks();
+            restoreState();
+            // Google Places API'yi yüklemeyi dene (API key varsa)
+            loadGooglePlacesAPI();
+
+            // Ziyaret takibi (session başına bir kez)
+            const visitKey = 'berat_visited_' + new Date().toDateString();
+            if (!sessionStorage.getItem(visitKey)) {
+                trackVisit();
+                sessionStorage.setItem(visitKey, '1');
+            }
+        }
+
+        // --- DURUM GERİ YÜKLEME ---
+        function restoreState() {
+            // Eğer tüm namazlar tamamlanmışsa VEYA erken başvuru yapılmışsa
+            if (completed.length === totalBoxes || isEarlySubmission) {
+                if (currentStep === 'tesbihat' && !isEarlySubmission) {
+                    modal.classList.add('active');
+                    // Tesbihat durumunu geri yükle
+                    restoreTaskState();
+                } else if (currentStep === 'form') {
+                    modal.classList.add('active');
+                    document.getElementById('stepTesbihat').classList.add('hidden');
+                    document.getElementById('stepForm').classList.remove('hidden');
+                    // Form validasyonlarını başlat
+                    setTimeout(() => initFormValidation(), 100);
+                } else if (currentStep === 'success') {
+                    modal.classList.add('active');
+                    document.getElementById('stepTesbihat').classList.add('hidden');
+                    document.getElementById('stepForm').classList.add('hidden');
+                    document.getElementById('stepSuccess').classList.remove('hidden');
+                }
+            }
+        }
+
+        // --- TESBİHAT DURUMUNU GERİ YÜKLE ---
+        function restoreTaskState() {
+            const allItems = document.querySelectorAll('.task-item');
+            allItems.forEach((item, idx) => {
+                if (completedTasks.includes(idx)) {
+                    item.classList.add('checked');
+                    const icon = item.querySelector('.fa-check');
+                    if (icon) icon.style.display = 'block';
+                }
+            });
+            // İlk tamamlanmamışı aç
+            openFirstUncheckedTask();
+            // Buton durumunu güncelle
+            const checkedItems = document.querySelectorAll('.task-item.checked');
+            document.getElementById('btnNext').disabled = (allItems.length !== checkedItems.length);
+        }
+
+        // --- İLERLEMEYİ SIFIRLA ---
+        function resetProgress() {
+            if (confirm('Tüm ilerlemenizi sıfırlamak istediğinize emin misiniz?')) {
+                localStorage.removeItem('berat_progress');
+                localStorage.removeItem('berat_tasks');
+                localStorage.removeItem('berat_step');
+                localStorage.removeItem('berat_is_early');
+                location.reload();
+            }
+        }
+
+        // --- MODALI KAPAT ---
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        // --- GRID RENDER ---
+        function renderGrid() {
+            gridEl.innerHTML = '';
+            // Bir sonraki boş kutucuğu bulmak için
+            let nextIndex = -1;
+            for (let i = 0; i < totalBoxes; i++) {
+                if (!completed.includes(i)) {
+                    nextIndex = i;
+                    break;
+                }
+            }
+
+            for (let i = 0; i < totalBoxes; i++) {
+                const box = document.createElement('div');
+                box.id = `box-${i}`; // ID ekle
+                const isCompleted = completed.includes(i);
+                box.className = `box ${isCompleted ? 'completed' : ''}`;
+
+                if (i === nextIndex) {
+                    box.classList.add('next-up');
+                }
+
+                box.onclick = () => toggleBox(i);
+                gridEl.appendChild(box);
+            }
+        }
+
+        // --- ETKILEŞIM ---
+        function toggleBox(index) {
+            // Titreşim efekti (Mobile haptic)
+            if (navigator.vibrate) navigator.vibrate(10);
+
+            let wasCompleted = completed.includes(index);
+            const box = document.getElementById(`box-${index}`);
+
+            if (wasCompleted) {
+                // Silme işlemi
+                completed = completed.filter(id => id !== index);
+                if (box) box.classList.remove('completed');
+            } else {
+                // Ekleme işlemi
+                completed.push(index);
+                if (box) box.classList.add('completed');
+
+                // Animasyonlar
+                triggerCompletionEffects(index);
+            }
+
+            // localStorage güncelle
+            localStorage.setItem('berat_progress', JSON.stringify(completed));
+
+            // Next-up (yanıp sönen kutu) mantığını güncelle
+            updateNextUpBox();
+
+            // İstatistikleri güncelle
+            updateStats();
+
+            // Hepsi bittiyse
+            if (completed.length === totalBoxes) {
+                localStorage.setItem('berat_step', 'tesbihat');
+                setTimeout(() => {
+                    fireConfetti();
+                    showTesbihatStep();
+                }, 800);
+            }
+        }
+
+        function updateNextUpBox() {
+            // Önce tüm next-up classlarını temizle
+            document.querySelectorAll('.box.next-up').forEach(el => el.classList.remove('next-up'));
+
+            // İlk boş kutuyu bul
+            let nextIndex = -1;
+            // Sırayla gitmek için küçükten büyüğe sıralı varsayıyoruz ama completed array karışık olabilir
+            // O yüzden 0'dan 100'e döngü
+            for (let i = 0; i < totalBoxes; i++) {
+                if (!completed.includes(i)) {
+                    nextIndex = i;
+                    break;
+                }
+            }
+
+            if (nextIndex !== -1) {
+                const nextBox = document.getElementById(`box-${nextIndex}`);
+                if (nextBox) nextBox.classList.add('next-up');
+            }
+        }
+
+        // --- TAMAMLAMA EFEKTLERİ ---
+        function triggerCompletionEffects(index) {
+            const boxes = document.querySelectorAll('.box');
+            const box = boxes[index];
+            if (!box) return;
+
+            const rect = box.getBoundingClientRect();
+            const centerX = rect.left + window.scrollX + rect.width / 2;
+            const centerY = rect.top + window.scrollY + rect.height / 2;
+
+            // Kutucuğa animasyon class'ı ekle
+            setTimeout(() => {
+                const updatedBoxes = document.querySelectorAll('.box');
+                const updatedBox = updatedBoxes[index];
+                if (updatedBox) {
+                    updatedBox.classList.add('just-completed');
+                    setTimeout(() => updatedBox.classList.remove('just-completed'), 600);
+                }
+            }, 50);
+
+            // Işık halkası efekti
+            createRipple(centerX, centerY);
+
+            // Yıldız parçacıkları
+            createStarParticles(centerX, centerY);
+
+            // Milestone kontrolü (her 10 selamda bir)
+            const count = completed.length;
+            if (count === 10 || count === 25 || count === 40 || count === 50) {
+                showMilestoneToast(count);
+                // Milestone'larda mini konfeti
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        spread: 60,
+                        origin: {
+                            x: (centerX - window.scrollX) / window.innerWidth,
+                            y: (centerY - window.scrollY) / window.innerHeight
+                        }
+                    });
+                }, 200);
+            }
+        }
+
+        // --- IŞIK HALKASI ---
+        function createRipple(x, y) {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple-effect';
+            ripple.style.left = (x - 10) + 'px';
+            ripple.style.top = (y - 10) + 'px';
+            document.body.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 800);
+        }
+
+        // --- YILDIZ PARÇACIKLARI ---
+        function createStarParticles(x, y) {
+            const symbols = ['✦', '✧', '★', '☆', '✨'];
+            for (let i = 0; i < 6; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'star-particle';
+                particle.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+
+                // Rastgele yön
+                const angle = (i / 6) * Math.PI * 2;
+                const distance = 40 + Math.random() * 30;
+                particle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+                particle.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 800);
+            }
+        }
+
+        // --- MİLESTONE TOAST ---
+        function showMilestoneToast(count) {
+            const messages = {
+                10: '🌙 10 Selam Tamamlandı!',
+                25: '⭐ Yarısına Ulaştın!',
+                40: '🔥 40 Selam Tamamlandı! Az Kaldı!',
+                50: '🎉 Mâşâallah! Tamamlandı!'
+            };
+
+            const overlay = document.createElement('div');
+            overlay.className = 'milestone-overlay';
+
+            const toast = document.createElement('div');
+            toast.className = 'milestone-toast';
+            toast.innerText = messages[count] || `${count} Selam!`;
+
+            overlay.appendChild(toast);
+            document.body.appendChild(overlay);
+
+            setTimeout(() => overlay.remove(), 2500);
+        }
+
+        function updateStats() {
+            const count = completed.length;
+            const percentage = (count / totalBoxes) * 100;
+
+            progressFill.style.width = `${percentage}%`;
+            rakatCountEl.innerText = `${count * 2} / 100`;
+            completedCountEl.innerText = `${count} / 50 Selam`;
+
+            // Renk değişimi: Sona yaklaştıkça yeşile döner
+            if (percentage === 100) {
+                progressFill.style.background = 'var(--success)';
+            }
+        }
+
+        // --- ACCORDION ---
+        function toggleInfo() {
+            const content = document.getElementById('infoContent');
+            const icon = document.getElementById('infoIcon');
+            content.classList.toggle('open');
+            icon.classList.toggle('fa-chevron-up');
+            icon.classList.toggle('fa-chevron-down');
+        }
+
+        function toggleFazilet() {
+            const content = document.getElementById('faziletContent');
+            const icon = document.getElementById('faziletIcon');
+            content.classList.toggle('open');
+            icon.classList.toggle('fa-chevron-up');
+            icon.classList.toggle('fa-chevron-down');
+        }
+
+        // --- TASKS ---
+        function renderTasks() {
+            const list = document.getElementById('taskList');
+            tesbihatData.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = 'task-item';
+                div.dataset.index = idx;
+
+                const hasDetails = item.arabic && item.turkish;
+
+                div.innerHTML = `
+                    <div class="task-header">
+                        <div class="custom-checkbox"><i class="fas fa-check" style="font-size:12px; display:none;"></i></div>
+                        <span class="task-text">${item.text}</span>
+                        <span class="task-count">${item.count} kere</span>
+                    </div>
+                    ${hasDetails ? `
+                    <div class="task-details">
+                        <div class="task-arabic">${item.arabic}</div>
+                        <div class="task-turkish">${item.turkish}</div>
+                        <button class="task-check-btn" onclick="completeTask(${idx})">
+                            <i class="fas fa-check" style="margin-right:6px;"></i> Tamamladım
+                        </button>
+                    </div>
+                    ` : `
+                    <div class="task-details">
+                        <div class="task-turkish" style="text-align:center; border-left:none;">
+                            Yâsîn-i Şerîf'i okuyunuz
+                        </div>
+                        <button class="task-check-btn" onclick="completeTask(${idx})">
+                            <i class="fas fa-check" style="margin-right:6px;"></i> Tamamladım
+                        </button>
+                    </div>
+                    `}
+                `;
+
+                // Checkbox'a tıklanması task'ı tamamlasın
+                div.querySelector('.custom-checkbox').onclick = function (e) {
+                    e.stopPropagation();
+                    if (!div.classList.contains('checked')) {
+                        completeTask(idx);
+                    }
+                };
+
+                // Header'ın tıklanması kartı açsın (check edilmemişse)
+                div.querySelector('.task-header').onclick = function (e) {
+                    // Checkbox'a tıklanmadıysa
+                    if (!e.target.closest('.custom-checkbox') && !div.classList.contains('checked')) {
+                        openTask(idx);
+                    }
+                };
+
+                list.appendChild(div);
+            });
+
+            // İlk tamamlanmamışı aç
+            openFirstUncheckedTask();
+        }
+
+        function openTask(index) {
+            const allItems = document.querySelectorAll('.task-item');
+            allItems.forEach((item, idx) => {
+                if (idx === index && !item.classList.contains('checked')) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+            // Açılan kartı görünür alana kaydır
+            setTimeout(() => {
+                const activeItem = document.querySelector('.task-item.active');
+                if (activeItem) {
+                    activeItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 100);
+        }
+
+        function openFirstUncheckedTask() {
+            const allItems = document.querySelectorAll('.task-item');
+            for (let i = 0; i < allItems.length; i++) {
+                if (!allItems[i].classList.contains('checked')) {
+                    openTask(i);
+                    return;
+                }
+            }
+        }
+
+        function completeTask(index) {
+            const allItems = document.querySelectorAll('.task-item');
+            const item = allItems[index];
+
+            // Check işareti
+            item.classList.add('checked');
+            item.classList.remove('active');
+            const icon = item.querySelector('.fa-check');
+            if (icon) icon.style.display = 'block';
+
+            // State'i kaydet
+            if (!completedTasks.includes(index)) {
+                completedTasks.push(index);
+            }
+            localStorage.setItem('berat_tasks', JSON.stringify(completedTasks));
+
+            // Sonraki tamamlanmamışı aç
+            let nextIndex = -1;
+            for (let i = 0; i < allItems.length; i++) {
+                if (!allItems[i].classList.contains('checked')) {
+                    nextIndex = i;
+                    break;
+                }
+            }
+
+            if (nextIndex >= 0) {
+                setTimeout(() => openTask(nextIndex), 300);
+            }
+
+            // Tüm görevler bitti mi?
+            const checkedItems = document.querySelectorAll('.task-item.checked');
+            document.getElementById('btnNext').disabled = (allItems.length !== checkedItems.length);
+        }
+
+        function toggleTask(el) {
+            // Eski fonksiyon - geriye uyumluluk için
+            el.classList.toggle('checked');
+            const icon = el.querySelector('.fa-check');
+            icon.style.display = el.classList.contains('checked') ? 'block' : 'none';
+
+            // Tesbihat durumunu kaydet
+            const allItems = document.querySelectorAll('.task-item');
+            completedTasks = [];
+            allItems.forEach((item, idx) => {
+                if (item.classList.contains('checked')) {
+                    completedTasks.push(idx);
+                }
+            });
+            localStorage.setItem('berat_tasks', JSON.stringify(completedTasks));
+
+            // Tüm görevler bitti mi?
+            const checkedItems = document.querySelectorAll('.task-item.checked');
+            document.getElementById('btnNext').disabled = (allItems.length !== checkedItems.length);
+        }
+
+        // --- FORM AKIŞI ---
+        function openEarlyForm() {
+            localStorage.setItem('berat_is_early', 'true');
+            isEarlySubmission = true;
+            modal.classList.add('active');
+            document.getElementById('stepTesbihat').classList.add('hidden');
+            document.getElementById('stepForm').classList.remove('hidden');
+            document.getElementById('stepSuccess').classList.add('hidden');
+            localStorage.setItem('berat_step', 'form');
+            initFormValidation();
+        }
+
+        let addressAutocomplete = null;
+        let formValidation = {
+            name: false,
+            phone: false,
+            email: false,
+            address: false
+        };
+
+        // --- FORM AKIŞI ---
+        function showTesbihatStep() {
+            modal.classList.add('active');
+            document.getElementById('stepTesbihat').classList.remove('hidden');
+            document.getElementById('stepForm').classList.add('hidden');
+            document.getElementById('stepSuccess').classList.add('hidden');
+            localStorage.setItem('berat_step', 'tesbihat');
+            // Tesbihat durumunu (checkboxları) görsel olarak güncelle
+            restoreTaskState();
+        }
+
+        function showForm() {
+            // Eğer form daha önce gönderildiyse direkt başarı ekranına git
+            if (localStorage.getItem('berat_form_submitted') === 'true') {
+                localStorage.setItem('berat_step', 'success');
+                document.getElementById('stepTesbihat').classList.add('hidden');
+                document.getElementById('stepForm').classList.add('hidden');
+                document.getElementById('stepSuccess').classList.remove('hidden');
+                return;
+            }
+
+            document.getElementById('stepTesbihat').classList.add('hidden');
+            document.getElementById('stepForm').classList.remove('hidden');
+            localStorage.setItem('berat_step', 'form');
+            // İkinci kez konfeti
+            fireConfetti();
+
+            // Form validasyonlarını başlat
+            initFormValidation();
+        }
+
+        function initFormValidation() {
+            // Telefon validasyonu - intl-tel-input tarafından yönetiliyor
+            // Eski + ekleme kodu kaldırıldı
+
+            // Email validasyonu
+            const emailInputEl = document.getElementById('inputEmail');
+            if (emailInputEl) {
+                emailInputEl.addEventListener('blur', validateEmail);
+                emailInputEl.addEventListener('input', validateEmail);
+            }
+
+            // İsim validasyonu
+            const nameInputEl = document.getElementById('inputName');
+            if (nameInputEl) {
+                nameInputEl.addEventListener('input', validateName);
+            }
+
+            // Adres Google Places başlat (eğer API yüklüyse)
+            initAddressAutocomplete();
+        }
+
+        function initGooglePlaces() {
+            // Google Places API callback
+            initAddressAutocomplete();
+        }
+
+        // Google API'yi window'a bağla
+        window.initGooglePlaces = initGooglePlaces;
+
+        // Google Places API'yi dinamik olarak yükle
+        const GOOGLE_API_KEY = ''; // API key'inizi buraya yazın
+
+        function loadGooglePlacesAPI() {
+            if (!GOOGLE_API_KEY || GOOGLE_API_KEY === '' || GOOGLE_API_KEY === 'YOUR_GOOGLE_API_KEY') {
+                console.log('Google Places API key tanımlanmamış. Manuel adres girişi aktif.');
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places&callback=initGooglePlaces`;
+            script.async = true;
+            script.defer = true;
+            script.onerror = function () {
+                console.log('Google Places API yüklenemedi. Manuel adres girişi aktif.');
+            };
+            document.head.appendChild(script);
+        }
+
+        function initAddressAutocomplete() {
+            const addressInputEl = document.getElementById('inputAddress');
+            if (!addressInputEl) return;
+
+            // Google API yüklenmediyse, manuel adres girişine izin ver
+            if (!window.google || !window.google.maps || !window.google.maps.places) {
+                console.log('Google Places API mevcut değil. Manuel adres girişi aktif.');
+                addressInputEl.placeholder = 'Adresinizi yazın...';
+                addressInputEl.addEventListener('input', function () {
+                    formValidation.address = this.value.length > 10;
+                    updateAddressUI();
+                    checkFormValidity();
+                });
+                return;
+            }
+
+            addressAutocomplete = new google.maps.places.Autocomplete(addressInputEl, {
+                types: ['address'],
+                componentRestrictions: { country: ['tr', 'de', 'nl', 'be', 'fr', 'at', 'ch'] }
+            });
+
+            addressAutocomplete.addListener('place_changed', function () {
+                const place = addressAutocomplete.getPlace();
+
+                if (place.formatted_address) {
+                    document.getElementById('addressFull').value = place.formatted_address;
+
+                    // Şehir ve ülke bilgisini çıkar
+                    let city = '', country = '';
+                    if (place.address_components) {
+                        place.address_components.forEach(comp => {
+                            if (comp.types.includes('locality')) city = comp.long_name;
+                            if (comp.types.includes('administrative_area_level_1') && !city) city = comp.long_name;
+                            if (comp.types.includes('country')) country = comp.long_name;
+                        });
+                    }
+                    document.getElementById('addressCity').value = city;
+                    document.getElementById('addressCountry').value = country;
+
+                    formValidation.address = true;
+                    updateAddressUI();
+                    checkFormValidity();
+                }
+            });
+
+            addressInputEl.addEventListener('input', function () {
+                formValidation.address = false;
+                updateAddressUI();
+                checkFormValidity();
+            });
+        }
+
+        function validatePhone() {
+            const phoneInputEl = document.getElementById('inputPhone');
+            const phone = phoneInputEl.value.trim();
+
+            // intl-tel-input ile ülke kodu ayrı gösteriliyor
+            // Input'ta sadece ulusal numara var (+ yok)
+            const digitsOnly = phone.replace(/\D/g, '');
+
+            if (phone === '') {
+                formValidation.phone = false;
+                phoneInputEl.classList.remove('valid', 'invalid');
+            } else if (digitsOnly.length >= 7 && digitsOnly.length <= 15) {
+                // En az 7 rakam (ulusal numara)
+                formValidation.phone = true;
+                phoneInputEl.classList.remove('invalid');
+                phoneInputEl.classList.add('valid');
+            } else {
+                formValidation.phone = false;
+                phoneInputEl.classList.remove('valid');
+                phoneInputEl.classList.add('invalid');
+            }
+            checkFormValidity();
+        }
+
+        function validateEmail() {
+            const emailInputEl = document.getElementById('inputEmail');
+            const errorEl = document.getElementById('emailError');
+            const email = emailInputEl.value.trim();
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (email === '') {
+                formValidation.email = false;
+                emailInputEl.classList.remove('valid', 'invalid');
+                errorEl.textContent = '';
+            } else if (emailRegex.test(email)) {
+                formValidation.email = true;
+                emailInputEl.classList.remove('invalid');
+                emailInputEl.classList.add('valid');
+                errorEl.textContent = '✓ Geçerli e-posta';
+                errorEl.className = 'validation-message success';
+            } else {
+                formValidation.email = false;
+                emailInputEl.classList.remove('valid');
+                emailInputEl.classList.add('invalid');
+                errorEl.textContent = 'Geçerli bir e-posta adresi girin';
+                errorEl.className = 'validation-message error';
+            }
+            checkFormValidity();
+        }
+
+        function validateName() {
+            const nameInputEl = document.getElementById('inputName');
+            const errorEl = document.getElementById('nameError');
+            const name = nameInputEl.value.trim();
+
+            if (name === '') {
+                formValidation.name = false;
+                nameInputEl.classList.remove('valid', 'invalid');
+                errorEl.textContent = '';
+                errorEl.className = 'validation-message';
+            } else if (name.length < 3) {
+                formValidation.name = false;
+                nameInputEl.classList.remove('valid');
+                nameInputEl.classList.add('invalid');
+                errorEl.textContent = 'En az 3 karakter girin';
+                errorEl.className = 'validation-message error';
+            } else if (!name.includes(' ')) {
+                formValidation.name = false;
+                nameInputEl.classList.remove('valid');
+                nameInputEl.classList.add('invalid');
+                errorEl.textContent = 'Lütfen soyadınızı da giriniz';
+                errorEl.className = 'validation-message error';
+            } else {
+                formValidation.name = true;
+                nameInputEl.classList.remove('invalid');
+                nameInputEl.classList.add('valid');
+                errorEl.textContent = '';
+                errorEl.className = 'validation-message';
+            }
+            checkFormValidity();
+        }
+
+        function updateAddressUI() {
+            const addressInputEl = document.getElementById('inputAddress');
+            const errorEl = document.getElementById('addressError');
+            const hasGoogleAPI = window.google && window.google.maps && window.google.maps.places;
+
+            if (formValidation.address) {
+                addressInputEl.classList.remove('invalid');
+                addressInputEl.classList.add('valid');
+                errorEl.textContent = '✓ Adres kabul edildi';
+                errorEl.className = 'validation-message success';
+            } else if (addressInputEl.value.length > 0) {
+                addressInputEl.classList.remove('valid');
+                // Google API yokken hata gösterme, sadece uzunluk kontrolü yap
+                if (!hasGoogleAPI && addressInputEl.value.length <= 10) {
+                    addressInputEl.classList.add('invalid');
+                    errorEl.textContent = 'En az 10 karakter girin';
+                    errorEl.className = 'validation-message error';
+                } else if (hasGoogleAPI) {
+                    addressInputEl.classList.add('invalid');
+                    errorEl.textContent = 'Listeden bir adres seçin';
+                    errorEl.className = 'validation-message error';
+                } else {
+                    addressInputEl.classList.remove('invalid');
+                    errorEl.textContent = '';
+                }
+            } else {
+                addressInputEl.classList.remove('valid', 'invalid');
+                errorEl.textContent = '';
+            }
+        }
+
+        function checkFormValidity() {
+            const allValid = formValidation.name && formValidation.phone && formValidation.email && formValidation.address;
+            document.getElementById('submitBtn').disabled = !allValid;
+        }
+
+        // Google Sheets'e veri gönderme
+        const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyItLmXXCcxNt4a96dCEIZbY78AMk3Ado-DzUuPo0SulO0GllGkaET7uj-WKnDy6TkXnQ/exec';
+
+        // Ziyaret takibi - lightweight beacon
+        function trackVisit() {
+            const referral = getReferralCode();
+            const device = getDeviceType();
+            const timestamp = new Date().toISOString();
+
+            const params = new URLSearchParams({
+                gid: 1366164289,  // Visits sheet
+                referral: referral,
+                device: device,
+                timestamp: timestamp
+            });
+
+            const url = `${GOOGLE_SHEET_URL}?${params.toString()}`;
+
+            // navigator.sendBeacon daha hafif, fetch'e fallback
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon(url);
+            } else {
+                fetch(url, { mode: 'no-cors' }).catch(() => { });
+            }
+
+            console.log('Ziyaret kaydedildi:', { referral, device });
+        }
+
+        async function submitForm(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const formError = document.getElementById('formError');
+
+            // Butonu devre dışı bırak
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gönderiliyor...';
+            formError.textContent = '';
+
+            // Tam uluslararası numarayı al
+            let fullPhoneNumber = '';
+            if (typeof phoneInput !== 'undefined' && phoneInput) {
+                // Seçili ülkenin dial kodunu al
+                const countryData = phoneInput.getSelectedCountryData();
+                const dialCode = countryData.dialCode || '';
+                const nationalNumber = document.getElementById('inputPhone').value.trim().replace(/\D/g, '');
+
+                if (dialCode && nationalNumber) {
+                    fullPhoneNumber = '+' + dialCode + nationalNumber;
+                } else {
+                    fullPhoneNumber = phoneInput.getNumber();
+                }
+            }
+            // Fallback: hidden field veya input değeri
+            if (!fullPhoneNumber) {
+                fullPhoneNumber = document.getElementById('phoneIntl').value || document.getElementById('inputPhone').value.trim();
+            }
+
+            console.log("Telefon numarası:", fullPhoneNumber);
+
+            // Veri toplama
+            const data = {
+                name: document.getElementById('inputName').value.trim(),
+                phone: fullPhoneNumber,
+                email: document.getElementById('inputEmail').value.trim(),
+                address: document.getElementById('addressFull').value || document.getElementById('inputAddress').value,
+                city: document.getElementById('addressCity').value,
+                country: document.getElementById('addressCountry').value,
+                referral: getReferralCode(),
+                device: getDeviceType(),
+                timestamp: new Date().toISOString(),
+                completedRakats: isEarlySubmission ? 0 : (completed.length * 2)
+            };
+
+            console.log("Gönderilen Veri:", data);
+
+            try {
+                // URL parametrelerini oluştur
+                const params = new URLSearchParams({
+                    gid: 0,
+                    name: data.name,
+                    phone: data.phone,
+                    email: data.email,
+                    address: data.address,
+                    city: data.city || '',
+                    country: data.country || '',
+                    referral: data.referral,
+                    device: data.device,
+                    timestamp: data.timestamp,
+                    completedRakats: data.completedRakats
+                });
+
+                const fullUrl = `${GOOGLE_SHEET_URL}?${params.toString()}`;
+
+                // Google Sheets'e gönder (GET request)
+                await fetch(fullUrl, {
+                    method: 'GET',
+                    mode: 'no-cors'
+                });
+
+                // Durumu güncelle
+                localStorage.setItem('berat_step', 'success');
+                localStorage.setItem('berat_form_submitted', 'true');
+
+                // Başarılı UI
+                document.getElementById('stepForm').classList.add('hidden');
+                document.getElementById('stepSuccess').classList.remove('hidden');
+                fireConfetti();
+
+            } catch (error) {
+                console.error('Gönderim hatası:', error);
+                formError.textContent = 'Bir hata oluştu, lütfen tekrar deneyin.';
+                formError.className = 'validation-message error';
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Kaydı Tamamla <i class="fas fa-check"></i>';
+            }
+        }
+
+        // --- EFEKT ---
+        function fireConfetti() {
+            var count = 200;
+            var defaults = {
+                origin: { y: 0.7 }
+            };
+
+            function fire(particleRatio, opts) {
+                confetti(Object.assign({}, defaults, opts, {
+                    particleCount: Math.floor(count * particleRatio)
+                }));
+            }
+
+            fire(0.25, { spread: 26, startVelocity: 55, });
+            fire(0.2, { spread: 60, });
+            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+            fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+            fire(0.1, { spread: 120, startVelocity: 45, });
+        }
+
+        // Başlat
+        init();
+    </script>
+
+    <!-- intl-tel-input JS -->
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.2.0/build/js/intlTelInput.min.js"></script>
+    <script>
+        // intl-tel-input başlatma
+        let phoneInput;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const input = document.getElementById('inputPhone');
+
+            phoneInput = window.intlTelInput(input, {
+                // Sadece hedef ülkeler (Türk diasporası + yaygın ülkeler)
+                onlyCountries: [
+                    "tr", // Türkiye
+                    "de", // Almanya
+                    "nl", // Hollanda
+                    "be", // Belçika
+                    "fr", // Fransa
+                    "at", // Avusturya
+                    "ch", // İsviçre
+                    "se", // İsveç
+                    "no", // Norveç
+                    "dk", // Danimarka
+                    "gb", // İngiltere
+                    "us", // ABD
+                    "ca", // Kanada
+                    "au", // Avustralya
+                    "sa", // Suudi Arabistan
+                    "ae", // BAE
+                    "qa", // Katar
+                    "kw", // Kuveyt
+                    "az", // Azerbaycan
+                    "kz", // Kazakistan
+                    "it", // İtalya
+                    "es", // İspanya
+                    "gr", // Yunanistan
+                    "bg", // Bulgaristan
+                    "ro", // Romanya
+                    "pl", // Polonya
+                    "ru", // Rusya
+                    "ua", // Ukrayna
+                    "ba", // Bosna
+                    "xk", // Kosova
+                    "mk", // Kuzey Makedonya
+                    "al", // Arnavutluk
+                ],
+                // IP tabanlı otomatik ülke tespiti
+                initialCountry: "auto",
+                geoIpLookup: function (callback) {
+                    fetch("https://ipapi.co/json")
+                        .then(res => res.json())
+                        .then(data => callback(data.country_code))
+                        .catch(() => callback("tr")); // Hata durumunda Türkiye
+                },
+                // Temel ayarlar
+                separateDialCode: true,  // Ülke kodu solda ayrı gösterilsin
+                nationalMode: true,       // Input'ta sadece ulusal numara, + eklemesin
+                allowDropdown: true,      // Ülke seçimi açılsın
+                countrySearch: true,
+                autoPlaceholder: "polite",
+                i18n: {
+                    searchPlaceholder: "Ülke ara...",
+                    noResultsMessage: "Sonuç bulunamadı",
+                    selectedCountryAriaLabel: "Seçili ülke",
+                    countryListAriaLabel: "Ülke listesi"
+                }
+            });
+
+            // Ülke kodu tespiti SADECE paste işleminde çalışsın
+            // Normal yazmada müdahale etmesin
+            input.addEventListener('paste', function () {
+                setTimeout(handlePhoneInput, 50);
+            });
+
+            // Numara güncellemesi ve validasyon
+            input.addEventListener('input', function () {
+                updatePhoneIntl();
+                validatePhone();
+            });
+            input.addEventListener('change', function () {
+                updatePhoneIntl();
+                validatePhone();
+            });
+            input.addEventListener('blur', function () {
+                updatePhoneIntl();
+                validatePhone();
+            });
+        });
+
+        // Ülke kodları listesi (onlyCountries ile eşleşmeli)
+        const countryCodes = {
+            '90': 'tr',   // Türkiye
+            '49': 'de',   // Almanya
+            '31': 'nl',   // Hollanda
+            '32': 'be',   // Belçika
+            '33': 'fr',   // Fransa
+            '43': 'at',   // Avusturya
+            '41': 'ch',   // İsviçre
+            '46': 'se',   // İsveç
+            '47': 'no',   // Norveç
+            '45': 'dk',   // Danimarka
+            '44': 'gb',   // İngiltere
+            '1': 'us',    // ABD/Kanada
+            '61': 'au',   // Avustralya
+            '966': 'sa',  // Suudi Arabistan
+            '971': 'ae',  // BAE
+            '974': 'qa',  // Katar
+            '965': 'kw',  // Kuveyt
+            '994': 'az',  // Azerbaycan
+            '7': 'kz',    // Kazakistan (ve Rusya)
+            '39': 'it',   // İtalya
+            '34': 'es',   // İspanya
+            '30': 'gr',   // Yunanistan
+            '359': 'bg',  // Bulgaristan
+            '40': 'ro',   // Romanya
+            '48': 'pl',   // Polonya
+            '380': 'ua',  // Ukrayna
+            '387': 'ba',  // Bosna
+            '383': 'xk',  // Kosova
+            '389': 'mk',  // Kuzey Makedonya
+            '355': 'al',  // Arnavutluk
+        };
+
+        function handlePhoneInput() {
+            if (!phoneInput) return;
+
+            const input = document.getElementById('inputPhone');
+            let value = input.value.trim();
+
+            // Eğer + ile başlıyorsa, ülke kodu tespit et
+            if (value.startsWith('+') || value.startsWith('00')) {
+                // + veya 00 prefix'ini temizle
+                let cleanValue = value.replace(/^(\+|00)/, '');
+
+                // Ülke kodunu bul (3 haneli, 2 haneli, 1 haneli sırayla dene)
+                let matchedCode = null;
+                let matchedCountry = null;
+
+                for (let len = 3; len >= 1; len--) {
+                    const possibleCode = cleanValue.substring(0, len);
+                    if (countryCodes[possibleCode]) {
+                        matchedCode = possibleCode;
+                        matchedCountry = countryCodes[possibleCode];
+                        break;
+                    }
+                }
+
+                if (matchedCode && matchedCountry) {
+                    // Ülkeyi değiştir
+                    phoneInput.setCountry(matchedCountry);
+
+                    // Ülke kodunu input'tan kaldır, sadece numarayı bırak
+                    const nationalNumber = cleanValue.substring(matchedCode.length);
+                    input.value = nationalNumber;
+                }
+            }
+
+            // Her durumda full numarayı güncelle
+            updatePhoneIntl();
+        }
+
+        function updatePhoneIntl() {
+            if (phoneInput) {
+                // Seçili ülkenin dial kodunu al ve manuel olarak birleştir
+                const countryData = phoneInput.getSelectedCountryData();
+                const dialCode = countryData.dialCode || '';
+                const nationalNumber = document.getElementById('inputPhone').value.trim().replace(/\D/g, '');
+
+                let fullNumber = '';
+                if (dialCode && nationalNumber) {
+                    fullNumber = '+' + dialCode + nationalNumber;
+                }
+                document.getElementById('phoneIntl').value = fullNumber;
+            }
+        }
+    </script>
+</body>
+
+</html>
